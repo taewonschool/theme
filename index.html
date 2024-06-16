@@ -25,7 +25,7 @@
    <div class="container">
       <nav class="navbar navbar-expand-lg navbar-white">
          <a class="navbar-brand" href="index.html">
-            <img class="img-fluid" width="150px" src="images/logo.png" alt="커뮤니티 로고">
+            <img class="img-fluid" width="100px" src="images/logo.png" alt="커뮤니티 로고">
          </a>
          <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navigation">
             <i class="ti-menu"></i>
@@ -36,19 +36,25 @@
                   <a class="nav-link" href="index.html">홈</a>
                </li>
                <li class="nav-item">
-                  <a class="nav-link" href="forum.html">포럼</a>
+                  <a class="nav-link restricted" href="forum.html">포럼</a>
                </li>
                <li class="nav-item">
-                  <a class="nav-link" href="study-groups.html">스터디 그룹</a>
+                  <a class="nav-link restricted" href="study-groups.html">스터디 그룹</a>
                </li>
                <li class="nav-item">
-                  <a class="nav-link" href="events.html">이벤트</a>
+                  <a class="nav-link restricted" href="events.html">이벤트</a>
                </li>
                <li class="nav-item">
                   <a class="nav-link" href="rules.html">규칙</a>
                </li>
                <li class="nav-item">
                   <a class="nav-link" href="contact.html">문의</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="login.html">로그인</a>
+               </li>
+               <li class="nav-item d-none" id="logoutLink">
+                  <a class="nav-link" href="#" onclick="logout()">로그아웃</a>
                </li>
             </ul>
          </div>
@@ -59,9 +65,34 @@
 
 <section class="section">
    <div class="container text-center">
-      <h1>태원고 학생 커뮤니티에 오신 것을 환영합니다</h1>
+      <h1>학생 커뮤니티에 오신 것을 환영합니다</h1>
       <p>이 플랫폼은 고등학생들이 학교 생활, 학업 등 다양한 정보를 교환하고 소통할 수 있도록 설계되었습니다. 자유롭게 토론에 참여하고, 자료를 공유하며, 동료들과 교류하세요.</p>
-      <img src="images/logo.png" alt="커뮤니티 로고" class="my-4" style="max-width: 200px;">
+   </div>
+</section>
+
+<!-- 회원가입 폼 -->
+<section class="section">
+   <div class="container">
+      <div class="row justify-content-center">
+         <div class="col-lg-6">
+            <h2 class="mb-4">회원가입</h2>
+            <form method="POST" action="#">
+               <div class="form-group">
+                  <label for="name">이름 (필수)</label>
+                  <input type="text" name="name" id="name" class="form-control" required>
+               </div>
+               <div class="form-group">
+                  <label for="email">이메일 주소 (필수)</label>
+                  <input type="email" name="email" id="email" class="form-control" required>
+               </div>
+               <div class="form-group">
+                  <label for="password">비밀번호 (필수)</label>
+                  <input type="password" name="password" id="password" class="form-control" required>
+               </div>
+               <button type="submit" class="btn btn-primary">가입하기</button>
+            </form>
+         </div>
+      </div>
    </div>
 </section>
 
@@ -70,9 +101,47 @@
       <div class="row justify-content-between">
          <div class="col-md-3 mb-4">
             <a class="mb-4 d-block" href="index.html">
-               <img class="img-fluid" width="150px" src="images/logo.png" alt="커뮤니티 로고">
+               <img class="img-fluid" width="100px" src="images/logo.png" alt="LogBook">
             </a>
+            <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>
          </div>
+
+         <div class="col-lg-2 col-md-3 col-6 mb-4">
+            <h6 class="mb-4">Quick Links</h6>
+            <ul class="list-unstyled footer-list">
+               <li><a href="about.html">About</a></li>
+               <li><a href="contact.html">Contact</a></li>
+               <li><a href="privacy-policy.html">Privacy Policy</a></li>
+               <li><a href="terms-conditions.html">Terms Conditions</a></li>
+            </ul>
+         </div>
+
+         <div class="col-lg-2 col-md-3 col-6 mb-4">
+            <h6 class="mb-4">Social Links</h6>
+            <ul class="list-unstyled footer-list">
+               <li><a href="#">facebook</a></li>
+               <li><a href="#">twitter</a></li>
+               <li><a href="#">linkedin</a></li>
+               <li><a href="#">github</a></li>
+            </ul>
+         </div>
+
+         <div class="col-md-3 mb-4">
+            <h6 class="mb-4">Subscribe Newsletter</h6>
+            <form class="subscription" action="javascript:void(0)" method="post">
+               <div class="position-relative">
+                  <i class="ti-email email-icon"></i>
+                  <input type="email" class="form-control" placeholder="Your Email Address">
+               </div>
+               <button class="btn btn-primary btn-block rounded" type="submit">Subscribe now</button>
+            </form>
+         </div>
+      </div>
+      <div class="scroll-top">
+         <a href="javascript:void(0);" id="scrollTop"><i class="ti-angle-up"></i></a>
+      </div>
+      <div class="text-center">
+         <p class="content">&copy; 2020 - Design &amp; Develop By <a href="https://themefisher.com/" target="_blank">Themefisher</a></p>
       </div>
    </div>
 </footer>
@@ -80,5 +149,34 @@
 <!-- JavaScript -->
 <script src="plugins/jquery/jquery.min.js"></script>
 <script src="plugins/bootstrap/bootstrap.min.js"></script>
+<script>
+   document.addEventListener("DOMContentLoaded", function() {
+      // Check login status on page load
+      if (localStorage.getItem('loggedIn') === 'true') {
+         document.querySelectorAll('.restricted').forEach(function(element) {
+            element.classList.remove('d-none');
+         });
+         document.getElementById('loginLink').classList.add('d-none');
+         document.getElementById('logoutLink').classList.remove('d-none');
+      } else {
+         document.querySelectorAll('.restricted').forEach(function(element) {
+            element.classList.add('d-none');
+         });
+      }
+   });
+
+   function logout() {
+      localStorage.setItem('loggedIn', 'false');
+      location.reload();
+   }
+</script>
 </body>
 </html>
+
+
+
+
+
+
+
+
