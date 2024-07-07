@@ -3,21 +3,11 @@
 <head>
    <meta charset="utf-8">
    <title>로그인</title>
-   <!-- 모바일 반응형 메타 -->
    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
    <meta name="description" content="이것은 메타 설명입니다">
    <meta name="author" content="Themefisher">
-   <!-- 플러그인 -->
-   <link rel="preload" href="https://fonts.gstatic.com/s/opensans/v18/mem8YaGs126MiZpBA-UFWJ0bbck.woff2" style="font-display: optional;">
    <link rel="stylesheet" href="plugins/bootstrap/bootstrap.min.css">
-   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:600%7cOpen&#43;Sans&amp;display=swap" media="screen">
-   <link rel="stylesheet" href="plugins/themify-icons/themify-icons.css">
-   <link rel="stylesheet" href="plugins/slick/slick.css">
-   <!-- 메인 스타일시트 -->
    <link rel="stylesheet" href="css/style.css">
-   <!-- 파비콘 -->
-   <link rel="shortcut icon" href="images/favicon.png" type="image/x-icon">
-   <link rel="icon" href="images/favicon.png" type="image/x-icon">
 </head>
 <body>
 <header class="sticky-top bg-white border-bottom border-default">
@@ -26,10 +16,6 @@
          <a class="navbar-brand" href="index.html">
             <img class="img-fluid" width="100px" src="images/logo.png" alt="커뮤니티 로고">
          </a>
-         <div id="auth-buttons">
-            <button id="loginButton" class="btn btn-primary">로그인</button>
-            <button id="logoutButton" class="btn btn-secondary" style="display:none;">로그아웃</button>
-         </div>
       </nav>
    </div>
 </header>
@@ -39,7 +25,7 @@
       <div class="row justify-content-center">
          <div class="col-lg-6">
             <h2 class="mb-4">로그인</h2>
-            <form id="loginForm" style="display:none;">
+            <form id="loginForm">
                <div class="form-group">
                   <label for="loginEmail">이메일 주소 (필수)</label>
                   <input type="email" name="loginEmail" id="loginEmail" class="form-control" required>
@@ -50,95 +36,38 @@
                </div>
                <button type="submit" class="btn btn-primary">로그인</button>
             </form>
-            <div id="mypage" style="display:none;">
-               <h2>마이 페이지</h2>
-               <p>환영합니다! 마이 페이지에 오신 것을 환영합니다.</p>
-            </div>
          </div>
       </div>
    </div>
 </section>
 
-<!-- JavaScript -->
 <script src="plugins/jquery/jquery.min.js"></script>
 <script src="plugins/bootstrap/bootstrap.min.js"></script>
 <script>
-   document.addEventListener('DOMContentLoaded', function() {
-      const loginForm = document.getElementById('loginForm');
-      const loginButton = document.getElementById('loginButton');
-      const logoutButton = document.getElementById('logoutButton');
-      const mypage = document.getElementById('mypage');
-      const authButtons = document.getElementById('auth-buttons');
-
-      // 로그인 상태 확인
-      fetch('http://localhost:3000/mypage', {
-         method: 'GET',
-         credentials: 'include'
+   document.getElementById('loginForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+      
+      fetch('http://localhost:3000/login', {
+         method: 'POST',
+         headers: {
+            'Content-Type': 'application/json'
+         },
+         body: JSON.stringify({ username: email, password: password })
       })
-      .then(response => {
-         if (response.ok) {
-            loginForm.style.display = 'none';
-            mypage.style.display = 'block';
-            loginButton.style.display = 'none';
-            logoutButton.style.display = 'inline-block';
+      .then(response => response.json())
+      .then(data => {
+         if (data.message === 'Login successful') {
+            alert('로그인 성공');
+            window.location.href = 'index.html';
          } else {
-            loginForm.style.display = 'block';
-            mypage.style.display = 'none';
-            loginButton.style.display = 'inline-block';
-            logoutButton.style.display = 'none';
+            alert('이메일 또는 비밀번호가 잘못되었습니다.');
          }
-      });
-
-      loginForm.addEventListener('submit', function(event) {
-         event.preventDefault();
-         const email = document.getElementById('loginEmail').value;
-         const password = document.getElementById('loginPassword').value;
-         
-         fetch('http://localhost:3000/login', {
-            method: 'POST',
-            headers: {
-               'Content-Type': 'application/json'
-            },
-            credentials: 'include',
-            body: JSON.stringify({ username: email, password: password })
-         })
-         .then(response => response.json())
-         .then(data => {
-            if (data.message === 'Login successful') {
-               alert('로그인 성공');
-               loginForm.style.display = 'none';
-               mypage.style.display = 'block';
-               loginButton.style.display = 'none';
-               logoutButton.style.display = 'inline-block';
-            } else {
-               alert('이메일 또는 비밀번호가 잘못되었습니다.');
-            }
-         })
-         .catch(error => {
-            console.error('Error:', error);
-            alert('로그인 중 오류가 발생했습니다.');
-         });
-      });
-
-      logoutButton.addEventListener('click', function() {
-         fetch('http://localhost:3000/logout', {
-            method: 'POST',
-            credentials: 'include'
-         })
-         .then(response => response.json())
-         .then(data => {
-            if (data.message === 'Logout successful') {
-               alert('로그아웃 성공');
-               loginForm.style.display = 'block';
-               mypage.style.display = 'none';
-               loginButton.style.display = 'inline-block';
-               logoutButton.style.display = 'none';
-            }
-         })
-         .catch(error => {
-            console.error('Error:', error);
-            alert('로그아웃 중 오류가 발생했습니다.');
-         });
+      })
+      .catch(error => {
+         console.error('Error:', error);
+         alert('로그인 중 오류가 발생했습니다.');
       });
    });
 </script>

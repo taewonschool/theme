@@ -1,0 +1,10 @@
+/* style.css */
+body {
+    font-family: 'Open Sans', sans-serif;
+}
+header {
+    margin-bottom: 2rem;
+}
+.section {
+    padding: 4rem 0;
+}
