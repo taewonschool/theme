@@ -24,14 +24,26 @@
                <li class="nav-item">
                   <a class="nav-link" href="index.html">홈</a>
                </li>
-               <li class="nav-item">
+               <li class="nav-item d-none" id="rulesLink">
+                  <a class="nav-link" href="rules.html">규칙</a>
+               </li>
+               <li class="nav-item d-none" id="studyGroupsLink">
+                  <a class="nav-link" href="study-groups.html">스터디 그룹</a>
+               </li>
+               <li class="nav-item d-none" id="forumLink">
+                  <a class="nav-link" href="forum.html">포럼</a>
+               </li>
+               <li class="nav-item" id="registerLink">
                   <a class="nav-link" href="register.html">회원가입</a>
                </li>
-               <li class="nav-item">
+               <li class="nav-item" id="loginLink">
                   <a class="nav-link" href="login.html">로그인</a>
                </li>
                <li class="nav-item d-none" id="logoutLink">
                   <a class="nav-link" href="#" onclick="logout()">로그아웃</a>
+               </li>
+               <li class="nav-item d-none" id="mypageLink">
+                  <a class="nav-link" href="mypage.html">My Page</a>
                </li>
             </ul>
          </div>
@@ -50,35 +62,56 @@
 <script src="plugins/bootstrap/bootstrap.min.js"></script>
 <script>
    document.addEventListener("DOMContentLoaded", function() {
-      // Check login status on page load
-      fetch('http://localhost:3000/mypage', {
-         method: 'GET',
-         credentials: 'include'
-      })
-      .then(response => response.json())
-      .then(data => {
-         if (data.message) {
-            document.getElementById('logoutLink').classList.remove('d-none');
-         } else {
-            document.getElementById('logoutLink').classList.add('d-none');
-         }
-      });
+      function checkLoginStatus() {
+         fetch('http://localhost:3000/mypage', {
+            method: 'GET',
+            credentials: 'include' // 자격 증명을 포함한 요청 허용
+         })
+         .then(response => response.json())
+         .then(data => {
+            if (data.message) {
+               document.getElementById('logoutLink').classList.remove('d-none');
+               document.getElementById('rulesLink').classList.remove('d-none');
+               document.getElementById('studyGroupsLink').classList.remove('d-none');
+               document.getElementById('forumLink').classList.remove('d-none');
+               document.getElementById('registerLink').classList.add('d-none');
+               document.getElementById('loginLink').classList.add('d-none');
+               document.getElementById('mypageLink').classList.remove('d-none'); // 로그인 시 마이 페이지 링크 표시
+            } else {
+               document.getElementById('logoutLink').classList.add('d-none');
+               document.getElementById('rulesLink').classList.add('d-none');
+               document.getElementById('studyGroupsLink').classList.add('d-none');
+               document.getElementById('forumLink').classList.add('d-none');
+               document.getElementById('registerLink').classList.remove('d-none');
+               document.getElementById('loginLink').classList.remove('d-none');
+               document.getElementById('mypageLink').classList.add('d-none'); // 비로그인 시 마이 페이지 링크 숨김
+            }
+         });
+      }
 
       function logout() {
          fetch('http://localhost:3000/logout', {
             method: 'POST',
-            credentials: 'include'
+            credentials: 'include' // 자격 증명을 포함한 요청 허용
          })
          .then(response => response.json())
          .then(data => {
             if (data.message === 'Logout successful') {
                alert('로그아웃 성공');
                document.getElementById('logoutLink').classList.add('d-none');
+               document.getElementById('rulesLink').classList.add('d-none');
+               document.getElementById('studyGroupsLink').classList.add('d-none');
+               document.getElementById('forumLink').classList.add('d-none');
+               document.getElementById('registerLink').classList.remove('d-none');
+               document.getElementById('loginLink').classList.remove('d-none');
+               document.getElementById('mypageLink').classList.add('d-none'); // 로그아웃 시 마이 페이지 링크 숨김
                window.location.href = 'index.html';
             }
          });
       }
+
       document.getElementById('logoutLink').addEventListener('click', logout);
+      checkLoginStatus();
    });
 </script>
 </body>

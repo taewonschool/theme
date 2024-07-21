@@ -38,6 +38,9 @@
                <li class="nav-item">
                   <a class="nav-link" href="contact.html">문의</a>
                </li>
+               <li class="nav-item" id="mypageLink" style="display:none;">
+                  <a class="nav-link" href="mypage.html">My Page</a>
+               </li>
             </ul>
          </div>
       </nav>
@@ -49,7 +52,32 @@
    <div class="container">
       <h1>스터디 그룹</h1>
       <p>다양한 과목의 스터디 그룹에 참여하거나 새로운 그룹을 만들어 학습 자료를 공유하고, 질문을 하고, 프로젝트를 협업하세요.</p>
-      <!-- 스터디 그룹 목록 및 생성 기능이 여기에 표시됩니다 -->
+
+      <!-- 스터디 그룹 검색 기능 -->
+      <div class="mb-4">
+         <input type="text" id="searchInput" class="form-control" placeholder="스터디 그룹 검색">
+      </div>
+
+      <!-- 스터디 그룹 목록 -->
+      <div id="studyGroupsList" class="row">
+         <!-- 스터디 그룹 항목이 여기에 표시됩니다 -->
+      </div>
+
+      <!-- 스터디 그룹 생성 폼 -->
+      <div class="mt-5">
+         <h3>새로운 스터디 그룹 생성</h3>
+         <form id="createGroupForm">
+            <div class="form-group">
+               <label for="groupName">스터디 그룹 이름</label>
+               <input type="text" id="groupName" class="form-control" required>
+            </div>
+            <div class="form-group">
+               <label for="groupDescription">스터디 그룹 설명</label>
+               <textarea id="groupDescription" class="form-control" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">생성</button>
+         </form>
+      </div>
    </div>
 </section>
 
@@ -68,5 +96,85 @@
 <!-- JavaScript -->
 <script src="plugins/jquery/jquery.min.js"></script>
 <script src="plugins/bootstrap/bootstrap.min.js"></script>
+<script>
+   const apiUrl = 'http://localhost:3000'; // 실제 서버 API 주소
+
+   // 스터디 그룹 목록을 불러오는 함수
+   function loadStudyGroups() {
+      fetch(`${apiUrl}/study-groups`)
+         .then(response => response.json())
+         .then(data => {
+            const studyGroupsList = document.getElementById('studyGroupsList');
+            studyGroupsList.innerHTML = '';
+            data.forEach(group => {
+               const groupItem = document.createElement('div');
+               groupItem.className = 'col-md-4 mb-4';
+               groupItem.innerHTML = `
+                  <div class="card">
+                     <div class="card-body">
+                        <h5 class="card-title">${group.name}</h5>
+                        <p class="card-text">${group.description}</p>
+                     </div>
+                  </div>
+               `;
+               studyGroupsList.appendChild(groupItem);
+            });
+         });
+   }
+
+   // 페이지 로드 시 스터디 그룹 목록 불러오기
+   document.addEventListener('DOMContentLoaded', loadStudyGroups);
+
+   // 스터디 그룹 생성 폼 제출 이벤트 핸들러
+   document.getElementById('createGroupForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const name = document.getElementById('groupName').value;
+      const description = document.getElementById('groupDescription').value;
+
+      fetch(`${apiUrl}/study-groups`, {
+         method: 'POST',
+         headers: {
+            'Content-Type': 'application/json'
+         },
+         body: JSON.stringify({ name, description })
+      })
+      .then(response => response.json())
+      .then(data => {
+         alert('스터디 그룹이 성공적으로 생성되었습니다.');
+         loadStudyGroups(); // 그룹 목록 갱신
+         document.getElementById('createGroupForm').reset();
+      });
+   });
+
+   // 스터디 그룹 검색 기능
+   document.getElementById('searchInput').addEventListener('input', function() {
+      const searchValue = this.value.toLowerCase();
+      const groups = document.querySelectorAll('#studyGroupsList .card');
+      groups.forEach(group => {
+         const groupName = group.querySelector('.card-title').textContent.toLowerCase();
+         if (groupName.includes(searchValue)) {
+            group.parentElement.style.display = '';
+         } else {
+            group.parentElement.style.display = 'none';
+         }
+      });
+   });
+
+   // 로그인 상태 확인
+   function checkLoginStatus() {
+      fetch(`${apiUrl}/mypage`, {
+         method: 'GET',
+         
+      })
+      .then(response => response.json())
+      .then(data => {
+         if (data.message) {
+            document.getElementById('mypageLink').style.display = 'block';
+         }
+      });
+   }
+
+   document.addEventListener('DOMContentLoaded', checkLoginStatus);
+</script>
 </body>
 </html>

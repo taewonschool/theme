@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+   <meta charset="utf-8">
+   <title>My Page - 태원고 학생 커뮤니티</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+   <link rel="stylesheet" href="plugins/bootstrap/bootstrap.min.css">
+   <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="sticky-top bg-white border-bottom border-default">
+   <div class="container">
+      <nav class="navbar navbar-expand-lg navbar-white">
+         <a class="navbar-brand" href="index.html">
+            <img class="img-fluid" width="100px" src="images/logo.png" alt="커뮤니티 로고">
+         </a>
+         <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navigation">
+            <i class="ti-menu"></i>
+         </button>
+         <div class="collapse navbar-collapse text-center" id="navigation">
+            <ul class="navbar-nav ml-auto">
+               <li class="nav-item">
+                  <a class="nav-link" href="index.html">홈</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="forum.html">포럼</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="study-groups.html">스터디 그룹</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="events.html">이벤트</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="rules.html">규칙</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="contact.html">문의</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="#" onclick="logout()">로그아웃</a>
+               </li>
+            </ul>
+         </div>
+      </nav>
+   </div>
+</header>
+
+<section class="section">
+   <div class="container">
+      <h1>My Page</h1>
+      <p>여기에 자기소개 글을 작성하고 저장하세요.</p>
+
+      <form id="introForm">
+         <div class="form-group">
+            <label for="introText">자기소개</label>
+            <textarea id="introText" class="form-control" rows="5" required></textarea>
+         </div>
+         <button type="submit" class="btn btn-primary">저장</button>
+      </form>
+
+      <h2 class="mt-5">현재 자기소개</h2>
+      <p id="currentIntro"></p>
+   </div>
+</section>
+
+<script src="plugins/jquery/jquery.min.js"></script>
+<script src="plugins/bootstrap/bootstrap.min.js"></script>
+<script>
+   const apiUrl = 'http://localhost:3000';
+
+   // 현재 자기소개 불러오기
+   function loadCurrentIntro() {
+      fetch(`${apiUrl}/mypage`, {
+         method: 'GET',
+        
+      })
+      .then(response => response.json())
+      .then(data => {
+         if (data.user && data.user.intro) {
+            document.getElementById('currentIntro').innerText = data.user.intro;
+         } else {
+            document.getElementById('currentIntro').innerText = '자기소개 글이 없습니다.';
+         }
+      });
+   }
+
+   // 자기소개 저장
+   document.getElementById('introForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const intro = document.getElementById('introText').value;
+
+      fetch(`${apiUrl}/mypage/intro`, {
+         method: 'POST',
+         headers: {
+            'Content-Type': 'application/json'
+         },
+         body: JSON.stringify({ intro }),
+         
+      })
+      .then(response => response.json())
+      .then(data => {
+         alert('자기소개 글이 저장되었습니다.');
+         loadCurrentIntro();
+      });
+   });
+
+   // 로그아웃
+   function logout() {
+      fetch(`${apiUrl}/logout`, {
+         method: 'POST',
+        
+      })
+      .then(response => response.json())
+      .then(data => {
+         if (data.message === 'Logout successful') {
+            alert('로그아웃 성공');
+            window.location.href = 'index.html';
+         }
+      });
+   }
+
+   document.addEventListener('DOMContentLoaded', loadCurrentIntro);
+</script>
+</body>
+</html>
